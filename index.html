@@ -70,8 +70,9 @@ button,input{font:inherit}
 .day.done{background:linear-gradient(180deg,#f7fffb,#f1fbf6)}
 .day.done .mini{text-decoration:line-through;color:#7d968c}
 .day.past:not(.has-task){opacity:.58}
-.plan{display:flex;flex-direction:column;gap:10px}
-.task{border:1px solid var(--line);border-radius:17px;padding:14px 14px 14px 12px;display:flex;align-items:center;gap:12px;background:#fff;cursor:pointer;transition:.18s}
+.project-pair{min-height:590px;height:590px;overflow:hidden}
+.plan{display:flex;flex-direction:column;gap:9px}
+.task{border:1px solid var(--line);border-radius:16px;padding:11px 12px;display:flex;align-items:center;gap:11px;background:#fff;cursor:pointer;transition:.18s;min-height:61px}
 .task:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(35,48,79,.07)}
 .check{width:26px;height:26px;border-radius:9px;border:2px solid #ccd4e3;background:#fff;display:grid;place-items:center;flex:none;font-size:14px;color:#fff;transition:.2s}
 .task.done .check{background:var(--green);border-color:var(--green)}
@@ -81,10 +82,27 @@ button,input{font:inherit}
 .task-title{font-weight:850}
 .task-meta{font-size:12px;color:var(--muted);margin-top:3px}
 .task-xp{font-size:12px;font-weight:800;color:#a17418;background:#fbf4e5;padding:6px 9px;border-radius:999px}
-.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.pipe{padding:14px;border-radius:16px;border:1px solid var(--line);background:#fff}
-.pipe b{display:block;font-size:13px}
-.pipe span{display:block;font-size:11px;color:var(--muted);margin-top:5px}
+.loop-section{grid-column:1/-1;padding:28px;overflow:hidden;position:relative;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 100%)}
+.loop-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:14px}
+.loop-head h3{font-size:26px;margin:0;letter-spacing:-.03em}
+.loop-head p{max-width:600px;margin:0;color:var(--muted);line-height:1.55;font-size:13px}
+.loop-board{position:relative;height:430px;border:1px solid #e2e7f2;border-radius:28px;background:
+radial-gradient(circle at 50% 50%,rgba(79,109,245,.08),rgba(79,109,245,0) 34%),
+linear-gradient(180deg,#fbfcff 0%,#f5f7fc 100%);overflow:hidden}
+.loop-svg{position:absolute;inset:0;width:100%;height:100%}
+.loop-path{fill:none;stroke:url(#loopGrad);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:13 10;animation:flow 14s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-220}}
+.loop-node{position:absolute;width:172px;min-height:92px;transform:translate(-50%,-50%);background:#fff;border:1px solid #dfe5f0;border-radius:20px;padding:13px 14px;box-shadow:0 12px 28px rgba(33,48,83,.08);z-index:2}
+.loop-node .num{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,#6f87ff,#506df5);color:#fff;font-weight:900;box-shadow:0 5px 12px rgba(79,109,245,.22);margin-bottom:8px}
+.loop-node b{font-size:13px;display:block}
+.loop-node span{display:block;font-size:11px;color:var(--muted);line-height:1.35;margin-top:4px}
+.loop-node.n1{left:14%;top:22%}.loop-node.n2{left:37%;top:22%}.loop-node.n3{left:63%;top:22%}.loop-node.n4{left:86%;top:22%}
+.loop-node.n5{left:86%;top:78%}.loop-node.n6{left:63%;top:78%}.loop-node.n7{left:37%;top:78%}.loop-node.n8{left:14%;top:78%}
+.loop-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:280px;text-align:center;z-index:3}
+.loop-core .infinity{font-size:54px;line-height:1;font-weight:950;color:var(--accent);letter-spacing:-.08em}
+.loop-core b{display:block;font-size:18px;margin-top:4px}
+.loop-core span{display:block;color:var(--muted);font-size:12px;line-height:1.45;margin-top:6px}
+.loop-tag{display:inline-flex;margin-top:12px;padding:8px 11px;border-radius:999px;background:#eef2ff;color:#4d63cd;font-size:11px;font-weight:850}
 .btn3d{border:0;border-radius:16px;padding:12px 16px;font-weight:850;background:linear-gradient(180deg,#6f87ff,#506df5);color:white;box-shadow:0 8px 0 #3d55c9,0 12px 24px rgba(79,109,245,.25);cursor:pointer;transition:.12s;position:relative}
 .btn3d:active{transform:translateY(6px);box-shadow:0 2px 0 #3d55c9,0 6px 14px rgba(79,109,245,.2)}
 .btn-light{background:linear-gradient(180deg,#fff,#f5f7fb);color:var(--ink);box-shadow:0 6px 0 #dfe4ee,0 10px 20px rgba(35,48,79,.08);border:1px solid #e4e8f0}
@@ -97,8 +115,17 @@ button,input{font:inherit}
 .sheet ul{padding-left:20px;color:#4d586d;line-height:1.65}
 .sheet .close{float:right;border:0;background:#f0f3f8;width:38px;height:38px;border-radius:12px;cursor:pointer}
 .footer-note{margin-top:18px;color:#8791a4;font-size:12px;text-align:center}
-@media(max-width:860px){.hero,.grid{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr 1fr}.hero-main h2{font-size:29px}}
-@media(max-width:560px){.wrap{padding:18px 12px 60px}.top{align-items:flex-start}.brand h1{font-size:24px}.calendar{gap:5px}.day{min-height:62px;padding:6px}.day .mini{display:none}.pipeline{grid-template-columns:1fr}.hero-main,.reward-card,.section{padding:18px}}
+@media(max-width:860px){
+.hero,.grid{grid-template-columns:1fr}.hero-main h2{font-size:29px}
+.project-pair{height:auto;min-height:0}
+.loop-board{height:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
+.loop-svg,.loop-core{display:none}
+.loop-node{position:static;transform:none;width:auto;min-height:0}
+}
+@media(max-width:560px){
+.wrap{padding:18px 12px 60px}.top{align-items:flex-start}.brand h1{font-size:24px}.calendar{gap:5px}.day{min-height:62px;padding:6px}.day .mini{display:none}.hero-main,.reward-card,.section{padding:18px}
+.loop-section{padding:18px}.loop-head{align-items:flex-start;flex-direction:column}.loop-board{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -150,7 +177,7 @@ button,input{font:inherit}
       </div>
     </div>
 
-    <div class="card section">
+    <div class="card section project-pair">
       <div class="calendar-head">
     <h3>Календарь проекта</h3>
     <div style="display:flex;align-items:center;gap:8px">
@@ -163,22 +190,51 @@ button,input{font:inherit}
       <div class="footer-note">Нажми на день — откроется задача и подробный план.</div>
     </div>
 
-    <div class="card section">
+    <div class="card section project-pair">
       <h3>Общий план действий</h3>
       <div class="plan" id="taskList"></div>
     </div>
 
-    <div class="card section" style="grid-column:1/-1">
-      <h3>Конвейер Yandex Games</h3>
-      <div class="pipeline">
-        <div class="pipe"><b>1. Идея</b><span>Одна механика, понятная за 3 секунды.</span></div>
-        <div class="pipe"><b>2. Прототип</b><span>Рабочая петля без лишних систем.</span></div>
-        <div class="pipe"><b>3. Game Feel</b><span>Звук, частицы, bounce, feedback.</span></div>
-        <div class="pipe"><b>4. Метрики</b><span>Проверяем: хочется ли играть ещё?</span></div>
-        <div class="pipe"><b>5. Мета</b><span>Рекорд, задания, награды, минимум систем.</span></div>
-        <div class="pipe"><b>6. Яндекс</b><span>SDK, реклама, leaderboard, сохранения.</span></div>
-        <div class="pipe"><b>7. Модерация</b><span>Отправили — и не ждём.</span></div>
-        <div class="pipe"><b>8. Следующая игра</b><span>Новый репозиторий, тот же алгоритм.</span></div>
+    <div class="card loop-section">
+      <div class="loop-head">
+        <div>
+          <div class="eyebrow">Повторяемый цикл</div>
+          <h3>Конвейер Yandex Games</h3>
+        </div>
+        <p>Не ищем одну идеальную игру. Проходим цикл, выпускаем актив, фиксируем опыт — и сразу запускаем следующий круг.</p>
+      </div>
+
+      <div class="loop-board">
+        <svg class="loop-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="loopGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#4f6df5"/>
+              <stop offset="55%" stop-color="#7e78ff"/>
+              <stop offset="100%" stop-color="#1f9d72"/>
+            </linearGradient>
+            <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#6579e9"/>
+            </marker>
+          </defs>
+          <path class="loop-path" marker-mid="url(#arrow)" marker-end="url(#arrow)"
+            d="M140 88 L370 88 L630 88 L860 88 L860 312 L630 312 L370 312 L140 312 Z"/>
+        </svg>
+
+        <div class="loop-node n1"><div class="num">1</div><b>Идея</b><span>Одна вечная механика + одна понятная фишка.</span></div>
+        <div class="loop-node n2"><div class="num">2</div><b>Прототип</b><span>Собираем ядро быстро, без магазина и лишней меты.</span></div>
+        <div class="loop-node n3"><div class="num">3</div><b>Game Feel</b><span>Физика, звук, feedback. Игра должна ощущаться приятно.</span></div>
+        <div class="loop-node n4"><div class="num">4</div><b>Проверка</b><span>Тестируем понятность, удержание и желание сыграть ещё.</span></div>
+        <div class="loop-node n5"><div class="num">5</div><b>Мета</b><span>Добавляем только то, что усиливает возврат игрока.</span></div>
+        <div class="loop-node n6"><div class="num">6</div><b>Yandex</b><span>SDK, реклама, сохранения, leaderboard, медиа.</span></div>
+        <div class="loop-node n7"><div class="num">7</div><b>Модерация</b><span>Отправили билд. Исправляем только реальные замечания.</span></div>
+        <div class="loop-node n8"><div class="num">8</div><b>Следующая игра</b><span>Не ждём. Новый репозиторий — и снова к шагу №1.</span></div>
+
+        <div class="loop-core">
+          <div class="infinity">∞</div>
+          <b>Не ждать. Повторять.</b>
+          <span>Каждый круг оставляет после себя ещё один игровой актив и ещё немного опыта.</span>
+          <div class="loop-tag">8 → 1 · новый цикл</div>
+        </div>
       </div>
     </div>
   </div>
@@ -215,6 +271,16 @@ const tasks=[
 {title:"Game #03 — новая идея",meta:"Не ждать модерацию VOID MERGE",xp:25,day:12,text:"Как только VOID MERGE отправлена, конвейер запускается заново.",list:["Выбрать вечную механику","Сформулировать одну фишку","Создать репозиторий","Собрать карту проекта","Начать ядро"]},
 ];
 
+const macroPlan=[
+  {title:"CORE 3D",meta:"Настоящая 3D-чаша, физика сфер, merge",tasks:[0]},
+  {title:"Управление + Game Feel",meta:"Камера, прицел, звук, эффекты, feedback",tasks:[1,2]},
+  {title:"VOID GATE",meta:"Главная фишка и читаемый визуальный стиль",tasks:[3]},
+  {title:"Баланс + удержание",meta:"Длительность партии, рекорд, базовая мета",tasks:[4,5]},
+  {title:"Монетизация + косметика",meta:"Rewarded, скины, арены — без перегруза",tasks:[6,7]},
+  {title:"Yandex + медиа",meta:"SDK, сохранения, реклама, карточка игры",tasks:[8,9]},
+  {title:"Тест → модерация → следующая",meta:"Проверка, отправка и новый цикл без ожидания",tasks:[10,11,12]}
+];
+
 const key="yg-project-map-v1";
 let state=JSON.parse(localStorage.getItem(key)||'{"done":{}}');
 function save(){localStorage.setItem(key,JSON.stringify(state));render()}
@@ -230,10 +296,15 @@ function render(){
  document.getElementById("levelText").textContent="Уровень "+level+" · "+(names[Math.min(level-1,names.length-1)]);
  document.getElementById("rewardFill").style.width=(x%50)*2+"%";
  const list=document.getElementById("taskList"); list.innerHTML="";
- tasks.forEach((t,i)=>{
-   const el=document.createElement("div"); el.className="task"+(state.done[i]?" done":"");
-   el.innerHTML='<div class="check" onclick="event.stopPropagation();toggleDone('+i+')"></div><div class="task-main"><div class="task-title">'+(i+1)+'. '+t.title+'</div><div class="task-meta">'+t.meta+'</div></div><div class="task-xp">+'+t.xp+' XP</div>';
-   el.onclick=()=>openTask(i); list.appendChild(el);
+ macroPlan.forEach((g,i)=>{
+   const completed=g.tasks.filter(ti=>state.done[ti]).length;
+   const isDone=completed===g.tasks.length;
+   const xpSum=g.tasks.reduce((s,ti)=>s+tasks[ti].xp,0);
+   const firstOpen=g.tasks.find(ti=>!state.done[ti]) ?? g.tasks[0];
+   const el=document.createElement("div"); el.className="task"+(isDone?" done":"");
+   el.innerHTML='<div class="check"></div><div class="task-main"><div class="task-title">'+(i+1)+'. '+g.title+'</div><div class="task-meta">'+g.meta+' · '+completed+'/'+g.tasks.length+'</div></div><div class="task-xp">+'+xpSum+' XP</div>';
+   el.onclick=()=>openTask(firstOpen);
+   list.appendChild(el);
  });
  renderCalendar();
 }
