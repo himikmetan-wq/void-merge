@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yandex Games — Project Map</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#ffffff; --ink:#172033; --muted:#75809a; --line:#e6ebf2;
+  --accent:#4f6df5; --accent2:#6f8cff; --green:#1f9d72; --gold:#d8a83f; --soft:#eef2ff;
+  --shadow:0 14px 40px rgba(27,39,76,.08),0 2px 8px rgba(27,39,76,.05);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#fafbfe 0%,#f3f6fb 100%);color:var(--ink)}
+button,input{font:inherit}
+.wrap{max-width:1180px;margin:auto;padding:28px 18px 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.brand h1{margin:0;font-size:30px;letter-spacing:-.03em}
+.brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.badge{padding:10px 14px;border:1px solid var(--line);background:#fff;border-radius:16px;box-shadow:var(--shadow);font-weight:700;font-size:13px}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin:20px 0}
+.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
+.hero-main{padding:26px;position:relative;overflow:hidden}
+.hero-main:after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-60px;top:-70px;background:radial-gradient(circle,rgba(79,109,245,.16),rgba(79,109,245,0) 70%)}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.hero-main h2{font-size:34px;line-height:1.05;margin:10px 0 12px;max-width:720px;letter-spacing:-.04em}
+.hero-main p{color:var(--muted);line-height:1.6;max-width:760px}
+.progress-row{display:flex;align-items:center;gap:12px;margin-top:18px}
+.progress{height:12px;background:#edf0f6;border-radius:999px;overflow:hidden;flex:1}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#7c91ff);width:0%;transition:.35s}
+.progress-label{font-weight:800;min-width:52px;text-align:right}
+.reward-card{padding:24px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(145deg,#fff 0%,#faf7ee 100%)}
+.reward-card .xp{font-size:38px;font-weight:900;letter-spacing:-.04em;color:#a17418}
+.reward-card .small{color:var(--muted);font-size:13px}
+.reward-meter{height:10px;background:#efe9da;border-radius:999px;overflow:hidden;margin-top:10px}
+.reward-meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d7aa45,#f1c96c);transition:.35s}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.section{padding:22px}
+.section h3{margin:0 0 14px;font-size:20px;letter-spacing:-.02em}
+.motivation{grid-column:1/-1;padding:20px 22px;background:linear-gradient(135deg,#eefbf6,#f7fffb);border-color:#d9efe6}
+.math-title{font-weight:900;font-size:21px;margin-bottom:6px}
+.math-copy{color:#497064;line-height:1.55}
+.math-box{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.math-input{flex:1;min-width:180px;background:white;border:1px solid #dfe8e3;border-radius:16px;padding:13px}
+.math-input label{display:block;color:#698077;font-size:12px;margin-bottom:6px}
+.math-input input{width:100%;border:0;outline:0;font-size:22px;font-weight:900;color:#1b2d27;background:transparent}
+.math-result{flex:1.2;min-width:220px;border-radius:16px;padding:14px 16px;background:#17382d;color:#fff}
+.math-result strong{display:block;font-size:28px}
+.math-result span{font-size:12px;color:#c9ded6}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.month{font-weight:900}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.dow{font-size:11px;text-align:center;color:var(--muted);padding:4px}
+.day{border:1px solid var(--line);background:#fff;border-radius:14px;min-height:70px;padding:8px;cursor:pointer;transition:.18s;position:relative}
+.day:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(40,55,90,.09)}
+.day.dim{opacity:.35}
+.day.today{outline:2px solid #b7c3ff}
+.day .n{font-weight:800;font-size:13px}
+.day .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);position:absolute;right:8px;top:9px}
+.day.done .dot{background:var(--green)}
+.day .mini{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.2}
+.plan{display:flex;flex-direction:column;gap:10px}
+.task{border:1px solid var(--line);border-radius:17px;padding:14px 14px 14px 12px;display:flex;align-items:center;gap:12px;background:#fff;cursor:pointer;transition:.18s}
+.task:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(35,48,79,.07)}
+.check{width:26px;height:26px;border-radius:9px;border:2px solid #ccd4e3;background:#fff;display:grid;place-items:center;flex:none;font-size:14px;color:#fff;transition:.2s}
+.task.done .check{background:var(--green);border-color:var(--green)}
+.task.done .check:after{content:"✓"}
+.task.done .task-title{text-decoration:line-through;color:#8b94a7}
+.task-main{min-width:0;flex:1}
+.task-title{font-weight:850}
+.task-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.task-xp{font-size:12px;font-weight:800;color:#a17418;background:#fbf4e5;padding:6px 9px;border-radius:999px}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pipe{padding:14px;border-radius:16px;border:1px solid var(--line);background:#fff}
+.pipe b{display:block;font-size:13px}
+.pipe span{display:block;font-size:11px;color:var(--muted);margin-top:5px}
+.btn3d{border:0;border-radius:16px;padding:12px 16px;font-weight:850;background:linear-gradient(180deg,#6f87ff,#506df5);color:white;box-shadow:0 8px 0 #3d55c9,0 12px 24px rgba(79,109,245,.25);cursor:pointer;transition:.12s;position:relative}
+.btn3d:active{transform:translateY(6px);box-shadow:0 2px 0 #3d55c9,0 6px 14px rgba(79,109,245,.2)}
+.btn-light{background:linear-gradient(180deg,#fff,#f5f7fb);color:var(--ink);box-shadow:0 6px 0 #dfe4ee,0 10px 20px rgba(35,48,79,.08);border:1px solid #e4e8f0}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.modal{position:fixed;inset:0;background:rgba(17,25,42,.38);display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
+.modal.open{display:flex}
+.sheet{width:min(620px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 30px 80px rgba(20,30,55,.22)}
+.sheet h3{font-size:26px;margin:6px 0 10px}
+.sheet p{color:#606b81;line-height:1.65}
+.sheet ul{padding-left:20px;color:#4d586d;line-height:1.65}
+.sheet .close{float:right;border:0;background:#f0f3f8;width:38px;height:38px;border-radius:12px;cursor:pointer}
+.footer-note{margin-top:18px;color:#8791a4;font-size:12px;text-align:center}
+@media(max-width:860px){.hero,.grid{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr 1fr}.hero-main h2{font-size:29px}}
+@media(max-width:560px){.wrap{padding:18px 12px 60px}.top{align-items:flex-start}.brand h1{font-size:24px}.calendar{gap:5px}.day{min-height:62px;padding:6px}.day .mini{display:none}.pipeline{grid-template-columns:1fr}.hero-main,.reward-card,.section{padding:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1>Yandex Games — Project Map</h1>
+      <p>Конвейер игр: собрать → проверить → отправить → не ждать → делать следующую.</p>
+    </div>
+    <div class="badge">Проект: VOID MERGE</div>
+  </div>
+
+  <div class="hero">
+    <div class="card hero-main">
+      <div class="eyebrow">Текущий спринт</div>
+      <h2>Сначала рабочая петля. Потом красота. Потом монетизация.</h2>
+      <p>Главная задача — быстро довести VOID MERGE до состояния, когда игроку хочется нажать «ещё раз». Всё остальное добавляем слоями, только если ядро уже работает.</p>
+      <div class="progress-row">
+        <div class="progress"><i id="progressFill"></i></div>
+        <div class="progress-label" id="progressLabel">0%</div>
+      </div>
+      <div class="toolbar">
+        <button class="btn3d" onclick="openCurrent()">Текущий шаг</button>
+        <button class="btn3d btn-light" onclick="resetToday()">Фокус на сегодня</button>
+      </div>
+    </div>
+    <div class="card reward-card">
+      <div>
+        <div class="eyebrow" style="color:#a17418">Система наград</div>
+        <div class="xp" id="xp">0 XP</div>
+        <div class="small" id="levelText">Уровень 1 · Старт конвейера</div>
+        <div class="reward-meter"><i id="rewardFill"></i></div>
+      </div>
+      <div class="small" style="margin-top:18px">Каждый закрытый шаг остаётся в истории — мы его перечёркиваем, а не удаляем.</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card motivation">
+      <div class="math-title">Положительная математика портфеля</div>
+      <div class="math-copy">Одна игра может приносить мало. Портфель игр меняет математику. Наша цель — не искать «единственный хит», а регулярно создавать активы, каждый из которых может приносить что-то постоянно.</div>
+      <div class="math-box">
+        <div class="math-input"><label>Количество игр</label><input id="gamesCount" type="number" min="1" value="10" /></div>
+        <div class="math-input"><label>Средний доход с игры / мес.</label><input id="perGame" type="number" min="0" value="300" /></div>
+        <div class="math-result"><span>Портфель приносит</span><strong id="portfolioMonth">3 000 ₽ / мес.</strong><span id="portfolioYear">36 000 ₽ / год. Даже маленькая игра — это не ноль.</span></div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="calendar-head"><h3>Календарь проекта</h3><div class="month" id="monthTitle"></div></div>
+      <div class="calendar" id="calendar"></div>
+      <div class="footer-note">Нажми на день — откроется задача и подробный план.</div>
+    </div>
+
+    <div class="card section">
+      <h3>Общий план действий</h3>
+      <div class="plan" id="taskList"></div>
+    </div>
+
+    <div class="card section" style="grid-column:1/-1">
+      <h3>Конвейер Yandex Games</h3>
+      <div class="pipeline">
+        <div class="pipe"><b>1. Идея</b><span>Одна механика, понятная за 3 секунды.</span></div>
+        <div class="pipe"><b>2. Прототип</b><span>Рабочая петля без лишних систем.</span></div>
+        <div class="pipe"><b>3. Game Feel</b><span>Звук, частицы, bounce, feedback.</span></div>
+        <div class="pipe"><b>4. Метрики</b><span>Проверяем: хочется ли играть ещё?</span></div>
+        <div class="pipe"><b>5. Мета</b><span>Рекорд, задания, награды, минимум систем.</span></div>
+        <div class="pipe"><b>6. Яндекс</b><span>SDK, реклама, leaderboard, сохранения.</span></div>
+        <div class="pipe"><b>7. Модерация</b><span>Отправили — и не ждём.</span></div>
+        <div class="pipe"><b>8. Следующая игра</b><span>Новый репозиторий, тот же алгоритм.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this) closeModal()">
+  <div class="sheet">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div class="eyebrow" id="modalStage">Этап</div>
+    <h3 id="modalTitle"></h3>
+    <p id="modalText"></p>
+    <ul id="modalList"></ul>
+    <div class="toolbar">
+      <button class="btn3d" id="modalDone">Отметить выполненным</button>
+      <button class="btn3d btn-light" onclick="closeModal()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const tasks=[
+{title:"Ядро игры",meta:"Сфера → столкновение → merge → очки → game over → рестарт",xp:20,day:0,text:"Собрать самую маленькую версию VOID MERGE. Никаких сундуков, магазина и сложной меты.",list:["Круглое поле-реактор","Появление следующей сферы","Физическое столкновение","Одинаковые значения объединяются","Начисление очков","Переполнение = Game Over","Мгновенный рестарт"]},
+{title:"Game Feel",meta:"Сделать merge приятным",xp:15,day:1,text:"Если механика уже работает, добавляем ощущение качества — но без перегруза.",list:["Вспышка при merge","Частицы","Лёгкий bounce","Микро-тряска на крупных merge","Короткий звук","Читаемый feedback"]},
+{title:"Визуальный стиль",meta:"Закрепить первый sci-fi референс",xp:15,day:2,text:"Фиксируем стиль, чтобы больше не метаться между вариантами.",list:["Космический реактор","Чёрный / синий / фиолетовый / оранжевый","Сферы 1 → 2 → 4 → 8 → 16 → 32","NEXT","Score / Best","Лестница уровней слева"]},
+{title:"VOID GATE",meta:"Одна специальная механика",xp:20,day:3,text:"Добавляем ровно одну фишку, которая помогает в сложной ситуации.",list:["Копится заряд","Игрок активирует портал","Портал удаляет одну мешающую сферу","Ясный визуальный эффект","Не ломает баланс"]},
+{title:"Баланс",meta:"Сессия должна жить несколько минут",xp:20,day:4,text:"Настраиваем темп так, чтобы игра не заканчивалась слишком быстро и не была бесконечно простой.",list:["Частота выпадения уровней","Скорость заполнения","Шанс получить 8 / 16 / 32","Средняя длительность партии","Проверка тупиковых состояний"]},
+{title:"Базовая мета",meta:"Рекорд, задания, достижения",xp:15,day:5,text:"Только после того, как сама игра уже приятная.",list:["Локальный рекорд","Сохранение прогресса","3–5 простых заданий","Несколько достижений","Ежедневная серия — только если не мешает"]},
+{title:"Монетизация",meta:"Rewarded без раздражения",xp:15,day:6,text:"Монетизация должна помогать игроку, а не ломать игру.",list:["Продолжить попытку за rewarded","Дополнительный VOID GATE","Редкая межсессионная реклама","Не показывать рекламу в момент концентрации"]},
+{title:"Косметика",meta:"Скины и визуальные награды",xp:10,day:7,text:"Косметика — поздний слой. Не раньше ядра и баланса.",list:["Скины сфер","Варианты реактора","Эффекты merge","Фоны","Сундуки — только если действительно нужны"]},
+{title:"Yandex SDK",meta:"Подготовка к публикации",xp:25,day:8,text:"Подключаем платформенные возможности и готовим релиз.",list:["SDK","Сохранения","Leaderboard","Реклама","RU / EN","Проверка паузы и фокуса вкладки"]},
+{title:"Медиа и карточка",meta:"Обложка, скриншоты, описание",xp:15,day:9,text:"Собираем пакет для витрины Яндекс Игр.",list:["Иконка","Обложка","3–5 скриншотов","Короткое описание","Полное описание","Категория и возрастной рейтинг"]},
+{title:"Тест перед отправкой",meta:"Не полировать бесконечно",xp:20,day:10,text:"Финальная техническая проверка. Исправляем критичное, не занимаемся вечной шлифовкой.",list:["Телефон","ПК","FPS","Звук","Сохранения","Реклама","Перезапуск","Нет блокирующих ошибок"]},
+{title:"Отправить на модерацию",meta:"Релиз — не финал, а переход к следующей игре",xp:30,day:11,text:"Отправляем игру и сразу освобождаем голову.",list:["Загрузка билда","Заполнение формы","Проверка обязательных полей","Отправка","Зафиксировать дату","Перейти к следующему прототипу"]},
+{title:"Game #03 — новая идея",meta:"Не ждать модерацию VOID MERGE",xp:25,day:12,text:"Как только VOID MERGE отправлена, конвейер запускается заново.",list:["Выбрать вечную механику","Сформулировать одну фишку","Создать репозиторий","Собрать карту проекта","Начать ядро"]},
+];
+
+const key="yg-project-map-v1";
+let state=JSON.parse(localStorage.getItem(key)||'{"done":{}}');
+function save(){localStorage.setItem(key,JSON.stringify(state));render()}
+function doneCount(){return tasks.filter((_,i)=>state.done[i]).length}
+function xp(){return tasks.reduce((s,t,i)=>s+(state.done[i]?t.xp:0),0)}
+function render(){
+ const n=doneCount(), p=Math.round(n/tasks.length*100);
+ document.getElementById("progressFill").style.width=p+"%";
+ document.getElementById("progressLabel").textContent=p+"%";
+ const x=xp(); document.getElementById("xp").textContent=x+" XP";
+ const level=Math.floor(x/50)+1;
+ const names=["Старт конвейера","Рабочий ритм","Продюсер","Фабрика игр","Портфель активов"];
+ document.getElementById("levelText").textContent="Уровень "+level+" · "+(names[Math.min(level-1,names.length-1)]);
+ document.getElementById("rewardFill").style.width=(x%50)*2+"%";
+ const list=document.getElementById("taskList"); list.innerHTML="";
+ tasks.forEach((t,i)=>{
+   const el=document.createElement("div"); el.className="task"+(state.done[i]?" done":"");
+   el.innerHTML='<div class="check" onclick="event.stopPropagation();toggleDone('+i+')"></div><div class="task-main"><div class="task-title">'+(i+1)+'. '+t.title+'</div><div class="task-meta">'+t.meta+'</div></div><div class="task-xp">+'+t.xp+' XP</div>';
+   el.onclick=()=>openTask(i); list.appendChild(el);
+ });
+ renderCalendar();
+}
+function toggleDone(i){state.done[i]=!state.done[i];save()}
+function openTask(i){
+ const t=tasks[i];
+ document.getElementById("modalStage").textContent="Этап "+(i+1)+" из "+tasks.length;
+ document.getElementById("modalTitle").textContent=t.title;
+ document.getElementById("modalText").textContent=t.text;
+ document.getElementById("modalList").innerHTML=t.list.map(x=>"<li>"+x+"</li>").join("");
+ const b=document.getElementById("modalDone"); b.textContent=state.done[i]?"Вернуть в работу":"Отметить выполненным";
+ b.onclick=()=>{toggleDone(i);closeModal()};
+ document.getElementById("modal").classList.add("open");
+}
+function closeModal(){document.getElementById("modal").classList.remove("open")}
+function openCurrent(){let i=tasks.findIndex((_,i)=>!state.done[i]);if(i<0)i=tasks.length-1;openTask(i)}
+function resetToday(){openCurrent()}
+function renderCalendar(){
+ const c=document.getElementById("calendar"); c.innerHTML="";
+ ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(x=>{let d=document.createElement("div");d.className="dow";d.textContent=x;c.appendChild(d)});
+ const base=new Date(); base.setHours(12,0,0,0);
+ const y=base.getFullYear(),m=base.getMonth(); document.getElementById("monthTitle").textContent=base.toLocaleDateString("ru-RU",{month:"long",year:"numeric"});
+ const first=new Date(y,m,1), offset=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+ for(let j=0;j<offset;j++){let d=document.createElement("div");d.className="day dim";c.appendChild(d)}
+ for(let n=1;n<=days;n++){
+   const el=document.createElement("div"); el.className="day";
+   const date=new Date(y,m,n); if(n===base.getDate())el.classList.add("today");
+   const delta=Math.round((date-base)/86400000); const ti=tasks.findIndex(t=>t.day===delta);
+   if(ti>=0){el.classList.add(state.done[ti]?"done":"");el.innerHTML='<div class="n">'+n+'</div><div class="dot"></div><div class="mini">'+tasks[ti].title+'</div>';el.onclick=()=>openTask(ti)}
+   else el.innerHTML='<div class="n">'+n+'</div>';
+   c.appendChild(el)
+ }
+}
+function portfolio(){
+ const a=Math.max(0,+document.getElementById("gamesCount").value||0),b=Math.max(0,+document.getElementById("perGame").value||0),m=a*b,y=m*12;
+ document.getElementById("portfolioMonth").textContent=m.toLocaleString("ru-RU")+" ₽ / мес.";
+ document.getElementById("portfolioYear").textContent=y.toLocaleString("ru-RU")+" ₽ / год. Даже маленькая игра — это не ноль.";
+}
+document.getElementById("gamesCount").addEventListener("input",portfolio);
+document.getElementById("perGame").addEventListener("input",portfolio);
+portfolio();render();
+</script>
+</body>
+</html>
