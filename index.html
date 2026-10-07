@@ -18,6 +18,9 @@ button,input{font:inherit}
 .brand h1{margin:0;font-size:30px;letter-spacing:-.03em}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
 .badge{padding:10px 14px;border:1px solid var(--line);background:#fff;border-radius:16px;box-shadow:var(--shadow);font-weight:700;font-size:13px}
+.play-main{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(180deg,#6f87ff,#506df5);color:#fff;padding:12px 18px;border-radius:16px;font-weight:900;box-shadow:0 8px 0 #3d55c9,0 12px 24px rgba(79,109,245,.25);white-space:nowrap}
+.play-main:active{transform:translateY(6px);box-shadow:0 2px 0 #3d55c9,0 6px 14px rgba(79,109,245,.2)}
+.top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .hero{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin:20px 0}
 .card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)}
 .hero-main{padding:26px;position:relative;overflow:hidden}
@@ -97,7 +100,10 @@ button,input{font:inherit}
       <h1>Yandex Games — Project Map</h1>
       <p>Конвейер игр: собрать → проверить → отправить → не ждать → делать следующую.</p>
     </div>
-    <div class="badge">Проект: VOID MERGE</div>
+    <div class="top-actions">
+      <div class="badge">Проект: VOID MERGE</div>
+      <a class="play-main" href="game.html">▶ ИГРАТЬ В VOID MERGE</a>
+    </div>
   </div>
 
   <div class="hero">
