@@ -65,6 +65,11 @@ button,input{font:inherit}
 .day .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);position:absolute;right:8px;top:9px}
 .day.done .dot{background:var(--green)}
 .day .mini{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.2}
+.day.has-task{background:linear-gradient(180deg,#fff,#f8faff)}
+.day.has-task .mini{color:#52617e;font-weight:700}
+.day.done{background:linear-gradient(180deg,#f7fffb,#f1fbf6)}
+.day.done .mini{text-decoration:line-through;color:#7d968c}
+.day.past:not(.has-task){opacity:.58}
 .plan{display:flex;flex-direction:column;gap:10px}
 .task{border:1px solid var(--line);border-radius:17px;padding:14px 14px 14px 12px;display:flex;align-items:center;gap:12px;background:#fff;cursor:pointer;transition:.18s}
 .task:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(35,48,79,.07)}
@@ -146,7 +151,14 @@ button,input{font:inherit}
     </div>
 
     <div class="card section">
-      <div class="calendar-head"><h3>Календарь проекта</h3><div class="month" id="monthTitle"></div></div>
+      <div class="calendar-head">
+    <h3>Календарь проекта</h3>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn3d btn-light" style="padding:7px 10px;box-shadow:0 4px 0 #dfe4ee" onclick="changeMonth(-1)">←</button>
+      <div class="month" id="monthTitle"></div>
+      <button class="btn3d btn-light" style="padding:7px 10px;box-shadow:0 4px 0 #dfe4ee" onclick="changeMonth(1)">→</button>
+    </div>
+  </div>
       <div class="calendar" id="calendar"></div>
       <div class="footer-note">Нажми на день — откроется задача и подробный план.</div>
     </div>
@@ -239,20 +251,42 @@ function openTask(i){
 function closeModal(){document.getElementById("modal").classList.remove("open")}
 function openCurrent(){let i=tasks.findIndex((_,i)=>!state.done[i]);if(i<0)i=tasks.length-1;openTask(i)}
 function resetToday(){openCurrent()}
+let calendarOffset=0;
+const projectStart=new Date(2026,9,7,12,0,0,0); // 7 октября 2026
+tasks.forEach((t,i)=>{ const d=new Date(projectStart); d.setDate(projectStart.getDate()+i); t.dateKey=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-'); });
+
+function changeMonth(dir){ calendarOffset+=dir; renderCalendar(); }
+window.changeMonth=changeMonth;
+
 function renderCalendar(){
  const c=document.getElementById("calendar"); c.innerHTML="";
  ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].forEach(x=>{let d=document.createElement("div");d.className="dow";d.textContent=x;c.appendChild(d)});
- const base=new Date(); base.setHours(12,0,0,0);
- const y=base.getFullYear(),m=base.getMonth(); document.getElementById("monthTitle").textContent=base.toLocaleDateString("ru-RU",{month:"long",year:"numeric"});
+ const now=new Date(); now.setHours(12,0,0,0);
+ const view=new Date(now.getFullYear(),now.getMonth()+calendarOffset,1,12,0,0,0);
+ const y=view.getFullYear(),m=view.getMonth();
+ document.getElementById("monthTitle").textContent=view.toLocaleDateString("ru-RU",{month:"long",year:"numeric"});
  const first=new Date(y,m,1), offset=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+
  for(let j=0;j<offset;j++){let d=document.createElement("div");d.className="day dim";c.appendChild(d)}
+
  for(let n=1;n<=days;n++){
-   const el=document.createElement("div"); el.className="day";
-   const date=new Date(y,m,n); if(n===base.getDate())el.classList.add("today");
-   const delta=Math.round((date-base)/86400000); const ti=tasks.findIndex(t=>t.day===delta);
-   if(ti>=0){el.classList.add(state.done[ti]?"done":"");el.innerHTML='<div class="n">'+n+'</div><div class="dot"></div><div class="mini">'+tasks[ti].title+'</div>';el.onclick=()=>openTask(ti)}
-   else el.innerHTML='<div class="n">'+n+'</div>';
-   c.appendChild(el)
+   const el=document.createElement("div");
+   const date=new Date(y,m,n,12,0,0,0);
+   const key=[y,String(m+1).padStart(2,'0'),String(n).padStart(2,'0')].join('-');
+   el.className="day";
+   if(date<now)el.classList.add("past");
+   if(date.getTime()===now.getTime())el.classList.add("today");
+   const ti=tasks.findIndex(t=>t.dateKey===key);
+
+   if(ti>=0){
+     el.classList.add("has-task");
+     if(state.done[ti])el.classList.add("done");
+     el.innerHTML='<div class="n">'+n+'</div><div class="dot"></div><div class="mini">'+tasks[ti].title+'</div>';
+     el.onclick=()=>openTask(ti);
+   } else {
+     el.innerHTML='<div class="n">'+n+'</div>';
+   }
+   c.appendChild(el);
  }
 }
 function portfolio(){
