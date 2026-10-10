@@ -92,7 +92,14 @@ linear-gradient(180deg,#fbfcff 0%,#f5f7fc 100%);overflow:hidden}
 .loop-svg{position:absolute;inset:0;width:100%;height:100%}
 .loop-path{fill:none;stroke:url(#loopGrad);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:13 10;animation:flow 14s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-220}}
-.loop-node{position:absolute;width:172px;min-height:92px;transform:translate(-50%,-50%);background:#fff;border:1px solid #dfe5f0;border-radius:20px;padding:13px 14px;box-shadow:0 12px 28px rgba(33,48,83,.08);z-index:2}
+.loop-node{position:absolute;width:172px;min-height:92px;transform:translate(-50%,-50%);background:#fff;border:1px solid #dfe5f0;border-radius:20px;padding:13px 14px;box-shadow:0 12px 28px rgba(33,48,83,.08);z-index:2;cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;user-select:none}
+.loop-node:hover{border-color:#c6d0ff;box-shadow:0 14px 32px rgba(33,48,83,.12)}
+.loop-node.active{transform:translate(-50%,-50%) scale(1.07);border:2px solid var(--accent);background:linear-gradient(145deg,#fff 0%,#f0f3ff 100%);box-shadow:0 0 0 6px rgba(79,109,245,.10),0 18px 38px rgba(79,109,245,.22);z-index:5}
+.loop-node.active .num{background:linear-gradient(180deg,#7b8fff,#4f6df5);box-shadow:0 0 0 5px rgba(79,109,245,.10),0 8px 18px rgba(79,109,245,.3)}
+.loop-node.active:after{content:"СЕЙЧАС В РАБОТЕ";position:absolute;left:50%;top:-13px;transform:translateX(-50%);white-space:nowrap;padding:5px 9px;border-radius:999px;background:var(--accent);color:#fff;font-size:9px;letter-spacing:.08em;font-weight:900;box-shadow:0 6px 14px rgba(79,109,245,.24)}
+.loop-node:focus-visible{outline:3px solid rgba(79,109,245,.28);outline-offset:4px}
+@keyframes activeStagePulse{0%,100%{box-shadow:0 0 0 6px rgba(79,109,245,.10),0 18px 38px rgba(79,109,245,.22)}50%{box-shadow:0 0 0 10px rgba(79,109,245,.05),0 18px 42px rgba(79,109,245,.28)}}
+.loop-node.active{animation:activeStagePulse 2.8s ease-in-out infinite}
 .loop-node .num{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg,#6f87ff,#506df5);color:#fff;font-weight:900;box-shadow:0 5px 12px rgba(79,109,245,.22);margin-bottom:8px}
 .loop-node b{font-size:13px;display:block}
 .loop-node span{display:block;font-size:11px;color:var(--muted);line-height:1.35;margin-top:4px}
@@ -121,6 +128,7 @@ linear-gradient(180deg,#fbfcff 0%,#f5f7fc 100%);overflow:hidden}
 .loop-board{height:auto;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px}
 .loop-svg,.loop-core{display:none}
 .loop-node{position:static;transform:none;width:auto;min-height:0}
+.loop-node.active{transform:none}
 }
 @media(max-width:560px){
 .wrap{padding:18px 12px 60px}.top{align-items:flex-start}.brand h1{font-size:24px}.calendar{gap:5px}.day{min-height:62px;padding:6px}.day .mini{display:none}.hero-main,.reward-card,.section{padding:18px}
@@ -283,6 +291,8 @@ const macroPlan=[
 
 const key="yg-project-map-v1";
 let state=JSON.parse(localStorage.getItem(key)||'{"done":{}}');
+if(!state.done)state.done={};
+if(!Number.isInteger(state.activeStage)||state.activeStage<0||state.activeStage>7)state.activeStage=2;
 function save(){localStorage.setItem(key,JSON.stringify(state));render()}
 function doneCount(){return tasks.filter((_,i)=>state.done[i]).length}
 function xp(){return tasks.reduce((s,t,i)=>s+(state.done[i]?t.xp:0),0)}
@@ -307,6 +317,31 @@ function render(){
    list.appendChild(el);
  });
  renderCalendar();
+ renderLoopStage();
+}
+function renderLoopStage(){
+ const nodes=[...document.querySelectorAll(".loop-node")];
+ nodes.forEach((node,i)=>{
+   const active=i===state.activeStage;
+   node.classList.toggle("active",active);
+   node.setAttribute("role","button");
+   node.setAttribute("tabindex","0");
+   node.setAttribute("aria-pressed",active?"true":"false");
+   node.setAttribute("aria-label",(active?"Текущий этап. ":"Выбрать этап. ")+(i+1)+". "+(node.querySelector("b")?.textContent||""));
+ });
+}
+function setLoopStage(i){
+ state.activeStage=Math.max(0,Math.min(7,i));
+ localStorage.setItem(key,JSON.stringify(state));
+ renderLoopStage();
+}
+function bindLoopStages(){
+ document.querySelectorAll(".loop-node").forEach((node,i)=>{
+   node.addEventListener("click",()=>setLoopStage(i));
+   node.addEventListener("keydown",(e)=>{
+     if(e.key==="Enter"||e.key===" "){e.preventDefault();setLoopStage(i)}
+   });
+ });
 }
 function toggleDone(i){state.done[i]=!state.done[i];save()}
 function openTask(i){
@@ -367,7 +402,7 @@ function portfolio(){
 }
 document.getElementById("gamesCount").addEventListener("input",portfolio);
 document.getElementById("perGame").addEventListener("input",portfolio);
-portfolio();render();
+bindLoopStages();portfolio();render();
 </script>
 </body>
 </html>
