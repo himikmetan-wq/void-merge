@@ -82,11 +82,21 @@ button,input{font:inherit}
 .task-title{font-weight:850}
 .task-meta{font-size:12px;color:var(--muted);margin-top:3px}
 .task-xp{font-size:12px;font-weight:800;color:#a17418;background:#fbf4e5;padding:6px 9px;border-radius:999px}
-.loop-section{grid-column:1/-1;padding:28px;overflow:hidden;position:relative;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 100%)}
+.loop-section{grid-column:1/-1;padding:34px;overflow:hidden;position:relative;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 100%)}
+.next-step-box{margin-top:20px;padding:18px;border:1px solid #dfe5f0;border-radius:20px;background:linear-gradient(145deg,#fff,#f8faff)}
+.next-step-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.next-step-head b{font-size:16px}
+.next-step-head span{font-size:11px;font-weight:850;color:var(--accent);background:#eef2ff;padding:6px 9px;border-radius:999px}
+.next-step-box textarea{width:100%;min-height:92px;resize:vertical;border:1px solid #dbe2ee;border-radius:16px;padding:14px 15px;background:#fff;color:var(--ink);outline:none;font:inherit;line-height:1.5}
+.next-step-box textarea:focus{border-color:#aebcff;box-shadow:0 0 0 4px rgba(79,109,245,.08)}
+.next-step-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+.next-step-status{font-size:12px;color:var(--muted)}
+.next-step-save{border:0;border-radius:14px;padding:10px 14px;font-weight:850;background:linear-gradient(180deg,#6f87ff,#506df5);color:#fff;cursor:pointer;box-shadow:0 5px 0 #3d55c9}
+.next-step-save:active{transform:translateY(4px);box-shadow:0 1px 0 #3d55c9}
 .loop-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:14px}
 .loop-head h3{font-size:26px;margin:0;letter-spacing:-.03em}
 .loop-head p{max-width:600px;margin:0;color:var(--muted);line-height:1.55;font-size:13px}
-.loop-board{position:relative;height:430px;border:1px solid #e2e7f2;border-radius:28px;background:
+.loop-board{position:relative;height:520px;border:1px solid #e2e7f2;border-radius:28px;background:
 radial-gradient(circle at 50% 50%,rgba(79,109,245,.08),rgba(79,109,245,0) 34%),
 linear-gradient(180deg,#fbfcff 0%,#f5f7fc 100%);overflow:hidden}
 .loop-svg{position:absolute;inset:0;width:100%;height:100%}
@@ -244,6 +254,17 @@ linear-gradient(180deg,#fbfcff 0%,#f5f7fc 100%);overflow:hidden}
           <div class="loop-tag">8 → 1 · новый цикл</div>
         </div>
       </div>
+      <div class="next-step-box">
+        <div class="next-step-head">
+          <b>Следующий краткосрочный шаг</b>
+          <span>МОЙ ФОКУС</span>
+        </div>
+        <textarea id="nextStepInput" placeholder="Например: дождаться генерации Claude, обкатать игру и запустить тест на Claude"></textarea>
+        <div class="next-step-actions">
+          <div class="next-step-status" id="nextStepStatus">Сохраняется в браузере</div>
+          <button class="next-step-save" type="button" id="nextStepSave">Сохранить шаг</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -293,6 +314,7 @@ const key="yg-project-map-v1";
 let state=JSON.parse(localStorage.getItem(key)||'{"done":{}}');
 if(!state.done)state.done={};
 if(!Number.isInteger(state.activeStage)||state.activeStage<0||state.activeStage>7)state.activeStage=2;
+if(typeof state.nextStep!=="string"||!state.nextStep.trim())state.nextStep="Дождаться генерации Claude, обкатать игру и запустить тест на Claude.";
 function save(){localStorage.setItem(key,JSON.stringify(state));render()}
 function doneCount(){return tasks.filter((_,i)=>state.done[i]).length}
 function xp(){return tasks.reduce((s,t,i)=>s+(state.done[i]?t.xp:0),0)}
@@ -334,6 +356,23 @@ function setLoopStage(i){
  state.activeStage=Math.max(0,Math.min(7,i));
  localStorage.setItem(key,JSON.stringify(state));
  renderLoopStage();
+}
+function initNextStep(){
+ const input=document.getElementById("nextStepInput");
+ const saveBtn=document.getElementById("nextStepSave");
+ const status=document.getElementById("nextStepStatus");
+ if(!input||!saveBtn)return;
+ input.value=state.nextStep||"";
+ const saveNext=()=>{
+   state.nextStep=input.value.trim();
+   localStorage.setItem(key,JSON.stringify(state));
+   status.textContent=state.nextStep?"Сохранено":"Шаг очищен";
+   setTimeout(()=>{status.textContent="Сохраняется в браузере"},1400);
+ };
+ saveBtn.addEventListener("click",saveNext);
+ input.addEventListener("keydown",(e)=>{
+   if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){e.preventDefault();saveNext();}
+ });
 }
 function bindLoopStages(){
  document.querySelectorAll(".loop-node").forEach((node,i)=>{
@@ -402,7 +441,7 @@ function portfolio(){
 }
 document.getElementById("gamesCount").addEventListener("input",portfolio);
 document.getElementById("perGame").addEventListener("input",portfolio);
-bindLoopStages();portfolio();render();
+bindLoopStages();initNextStep();portfolio();render();
 </script>
 </body>
 </html>
